@@ -4,9 +4,17 @@ A template for a front end playground.
 TODO: Describe the installation process
 ## Usage
 After pulling from github:
+
 1. npm install
-2. node server.js
-3. gulp watch
+1. node server.js
+1. gulp watch
+
+or
+
+1. npm install
+1. gulp test
+
+
 ## History
 TODO: Write history
 ## Credits
