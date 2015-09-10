@@ -15,7 +15,9 @@ var gulp = require('gulp'),
     notify = require('gulp-notify'),
     cache = require('gulp-cache'),
     livereload = require('gulp-livereload'),
-    del = require('del');
+    del = require('del'),
+    htmlreplace = require('gulp-html-replace'),
+    serve = require('gulp-serve');
 
 // Styles
 gulp.task('styles', function() {
@@ -52,23 +54,32 @@ gulp.task('images', function() {
 // HTML
 gulp.task('html', function(){
     return gulp.src('src/*.html')
+        .pipe(htmlreplace({
+//            'css': 'styles.min.css',
+            'js': 'scripts/main.min.js'
+        }))
         .pipe(gulp.dest('dist'))
         .pipe(notify({message: 'HTML task complete'}));
-})
+});
+
 
 // Clean
 gulp.task('clean', function(cb) {
-    del(['dist/assets/css', 'dist/assets/js', 'dist/assets/img'], cb)
+    return del(['dist/*'], cb)
+});
+
+// Build
+gulp.task('build', function(){
+    return gulp.start('styles', 'scripts', 'images', 'html');
 });
 
 // Default task
 gulp.task('default', ['clean'], function() {
-    gulp.start('styles', 'scripts', 'images');
+    gulp.start('build');
 });
 
 // Watch
 gulp.task('watch', function() {
-
     // Watch .css files
     gulp.watch('src/styles/**/*.css', ['styles']);
 
@@ -87,4 +98,9 @@ gulp.task('watch', function() {
     // Watch any files in dist/, reload on change
     gulp.watch(['dist/**']).on('change', livereload.changed);
 
+});
+
+// Test - dependency on build and watch
+gulp.task('test', ['build', 'watch'], function(){
+    return serve('public');
 });
