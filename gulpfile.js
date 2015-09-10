@@ -19,7 +19,8 @@ var gulp = require('gulp'),
 
 // Styles
 gulp.task('styles', function() {
-    return autoprefixer('last 2 version')
+    return gulp.src('src/styles/**/*.css')
+        .pipe(autoprefixer('last 2 version'))
         .pipe(gulp.dest('dist/styles'))
         .pipe(rename({ suffix: '.min' }))
         .pipe(minifycss())
@@ -68,8 +69,8 @@ gulp.task('default', ['clean'], function() {
 // Watch
 gulp.task('watch', function() {
 
-    // Watch .scss files
-    gulp.watch('src/styles/**/*.scss', ['styles']);
+    // Watch .css files
+    gulp.watch('src/styles/**/*.css', ['styles']);
 
     // Watch .js files
     gulp.watch('src/scripts/**/*.js', ['scripts']);
