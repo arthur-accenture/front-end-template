@@ -17,7 +17,7 @@ var gulp = require('gulp'),
     livereload = require('gulp-livereload'),
     del = require('del'),
     htmlreplace = require('gulp-html-replace'),
-    serve = require('gulp-serve');
+    connect = require('gulp-connect');
 
 // Styles
 gulp.task('styles', function() {
@@ -101,6 +101,11 @@ gulp.task('watch', function() {
 });
 
 // Test - dependency on build and watch
+// Alternative is to run "node server.js"
 gulp.task('test', ['build', 'watch'], function(){
-    return serve('public');
+    connect.server({
+//        livereload: true, // We don't need this as livereload is specified explicitly in the 'watch'.
+        root: 'dist',
+        port: 3000
+    });
 });
