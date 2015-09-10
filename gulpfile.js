@@ -93,7 +93,7 @@ gulp.task('watch', function() {
     gulp.watch('src/*.html', ['html']);
 
     // Create LiveReload server
-    livereload.listen();
+    livereload.listen();  // This livereload is for when "node server.js" is run.
 
     // Watch any files in dist/, reload on change
     gulp.watch(['dist/**']).on('change', livereload.changed);
@@ -104,7 +104,7 @@ gulp.task('watch', function() {
 // Alternative is to run "node server.js"
 gulp.task('test', ['build', 'watch'], function(){
     connect.server({
-//        livereload: true, // We don't need this as livereload is specified explicitly in the 'watch'.
+        livereload: true, // This livereload is for when "gulp test" is run.
         root: 'dist',
         port: 3000
     });
