@@ -19,58 +19,102 @@ var gulp = require('gulp'),
     htmlreplace = require('gulp-html-replace'),
     connect = require('gulp-connect');
 
-// Styles
-gulp.task('styles', function() {
-    return gulp.src('src/styles/**/*.css')
-        .pipe(autoprefixer('last 2 version'))
-        .pipe(gulp.dest('dist/styles'))
-        .pipe(rename({ suffix: '.min' }))
-        .pipe(minifycss())
-        .pipe(gulp.dest('dist/styles'))
-        .pipe(notify({ message: 'Styles task complete' }));
-});
 
-// Scripts
-gulp.task('scripts', function() {
-    return gulp.src('src/scripts/**/*.js')
-        .pipe(jshint('.jshintrc'))
-        .pipe(jshint.reporter('default'))
-        .pipe(concat('main.js'))
-        .pipe(gulp.dest('dist/scripts'))
-        .pipe(rename({ suffix: '.min' }))
-        .pipe(uglify())
-        .pipe(gulp.dest('dist/scripts'))
-        .pipe(notify({ message: 'Scripts task complete' }));
-});
+// Our task config
+var runList = [
+    'styles',
+//    'images',
+    'scripts',
+    'html'
+];
+var createStream = function(){
+    // Actually nothing needed here, this function just required to create stream "on('data')"
+}
+var taskFunctions = {
+    styles: function () {
+        return new Promise(function (resolve, reject) {
+            gulp.src('src/styles/**/*.css')
+                .pipe(autoprefixer('last 2 version'))
+                .pipe(gulp.dest('dist/styles'))
+                .pipe(rename({ suffix: '.min' }))
+                .pipe(minifycss())
+                .pipe(gulp.dest('dist/styles'))
+                .pipe(notify({ message: 'Styles task complete' }))
+                .on('data', createStream)
+                .on('end', resolve)
+                .on('error', reject);
+        });
+    },
+    scripts: function () {
+        return new Promise(function (resolve, reject) {
+            gulp.src('src/scripts/**/*.js')
+                .pipe(jshint('.jshintrc'))
+                .pipe(jshint.reporter('default'))
+                .pipe(concat('main.js'))
+                .pipe(gulp.dest('dist/scripts'))
+                .pipe(rename({ suffix: '.min' }))
+                .pipe(uglify())
+                .pipe(gulp.dest('dist/scripts'))
+                .pipe(notify({ message: 'Scripts task complete' }))
+                .on('data', createStream)
+                .on('end', resolve)
+                .on('error', reject);
+        });
+    },
+    images: function(){
+        return new Promise(function(resolve, reject) {
+            gulp.src('src/images/**/*')
+                .pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
+                .pipe(gulp.dest('dist/images'))
+                .pipe(notify({ message: 'Images task complete' }))
+                .on('data', createStream)
+                .on('end', resolve)
+                .on('error', reject);
+        });
+    },
+    html: function(){
+        return new Promise(function(resolve, reject) {
+            gulp.src('src/*.html')
+                .pipe(htmlreplace({
+    //            'css': 'styles.min.css',
+                    'js': 'scripts/main.min.js'
+                }))
+                .pipe(gulp.dest('dist'))
+                .pipe(notify({message: 'HTML task complete'}))
+                .on('data', createStream)
+                .on('end', resolve)
+                .on('error', reject);
+        });
+    }
+}
 
-// Images
-gulp.task('images', function() {
-    return gulp.src('src/images/**/*')
-        .pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
-        .pipe(gulp.dest('dist/images'))
-        .pipe(notify({ message: 'Images task complete' }));
-});
 
-// HTML
-gulp.task('html', function(){
-    return gulp.src('src/*.html')
-        .pipe(htmlreplace({
-//            'css': 'styles.min.css',
-            'js': 'scripts/main.min.js'
-        }))
-        .pipe(gulp.dest('dist'))
-        .pipe(notify({message: 'HTML task complete'}));
-});
+// Create our gulp tasks
+for(var i in taskFunctions){
+    gulp.task(i, function(){
+        return taskFunctions[i]();
+    })
+}
 
-
-// Clean
+// Clean task
 gulp.task('clean', function(cb) {
     return del(['dist/*'], cb)
 });
 
-// Build
+// Build task
 gulp.task('build', function(){
-    return gulp.start('styles', 'scripts', 'images', 'html');
+    // Promises
+    var promiseList = [];
+    // Run the tasks listed in variable "runList"
+    for(var i = 0; !!runList && i < runList.length; i++){
+        promiseList[promiseList.length] = taskFunctions[runList[i]]();
+        console.info((i+1) + ' of ' + runList.length + ' tasks started');
+    }
+
+    // When all tasks completed
+    Promise.all(promiseList).then(function(){
+        console.info('All build tasks complete');
+    });
 });
 
 // Default task
