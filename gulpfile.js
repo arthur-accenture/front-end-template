@@ -1,6 +1,6 @@
 /*!
  * gulp
- * $ npm install gulp-autoprefixer gulp-minify-css gulp-jshint gulp-concat gulp-uglify gulp-imagemin gulp-notify gulp-rename gulp-livereload gulp-cache del --save-dev
+ * $ npm install gulp-autoprefixer gulp-minify-css gulp-jshint gulp-concat gulp-uglify gulp-imagemin gulp-notify gulp-rename gulp-livereload gulp-cache del gulp-html-replace gulp-connect --save-dev
  */
 
 // Load plugins
@@ -47,13 +47,13 @@ var taskFunctions = {
     },
     scripts: function () {
         return new Promise(function (resolve, reject) {
-            gulp.src('src/scripts/**/*.js')
+            gulp.src(['src/scripts/utils/*.js', 'src/scripts/main.js'])
                 .pipe(jshint('.jshintrc'))
                 .pipe(jshint.reporter('default'))
-                .pipe(concat('main.js'))
+                .pipe(concat('all.js'))
                 .pipe(gulp.dest('dist/scripts'))
                 .pipe(rename({ suffix: '.min' }))
-                .pipe(uglify())
+//                .pipe(uglify())
                 .pipe(gulp.dest('dist/scripts'))
                 .pipe(notify({ message: 'Scripts task complete' }))
                 .on('data', createStream)
@@ -77,7 +77,7 @@ var taskFunctions = {
             gulp.src('src/*.html')
                 .pipe(htmlreplace({
     //            'css': 'styles.min.css',
-                    'js': 'scripts/main.min.js'
+                    'js': 'scripts/all.min.js'
                 }))
                 .pipe(gulp.dest('dist'))
                 .pipe(notify({message: 'HTML task complete'}))
@@ -90,10 +90,13 @@ var taskFunctions = {
 
 
 // Create our gulp tasks
-for(var i in taskFunctions){
-    gulp.task(i, function(){
-        return taskFunctions[i]();
+function createGulpTask(taskName, taskFunction){
+    gulp.task(taskName, function(){
+        return taskFunction();
     })
+}
+for(var i in taskFunctions){
+    createGulpTask(i, taskFunctions[i]);
 }
 
 // Clean task
