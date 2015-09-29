@@ -4,6 +4,7 @@ A template for a front end project.
 run `npm install`
 
 ## Usage
+1. If gulp hasn't been installed globally, run: `npm install -g gulp` first.
 1. `node server.js`
 1. `gulp watch`
 
