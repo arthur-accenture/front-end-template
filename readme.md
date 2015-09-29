@@ -1,10 +1,10 @@
 # Front End Template
 A template for a front end project.
 ## Installation
-run `npm install`
+1. If gulp hasn't been installed globally, run: `npm install -g gulp` first.
+1. run `npm install`
 
 ## Usage
-1. If gulp hasn't been installed globally, run: `npm install -g gulp` first.
 1. `node server.js`
 1. `gulp watch`
 
