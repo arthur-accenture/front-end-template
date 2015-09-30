@@ -47,7 +47,7 @@ var taskFunctions = {
     },
     scripts: function () {
         return new Promise(function (resolve, reject) {
-            gulp.src(['src/scripts/utils/*.js', 'src/scripts/main.js'])
+            gulp.src(['src/scripts/utils/*.js', 'src/scripts/*.js'])
                 .pipe(jshint('.jshintrc'))
                 .pipe(jshint.reporter('default'))
                 .pipe(concat('all.js'))
