@@ -2,7 +2,8 @@
 A template for a front end project.
 
 ## Copy Repository
-1. Make sure you have git installed. Create a temp directory and run the following commands: 
+1. Create a new blank repo in github.
+2. Make sure you have git installed. Create a temp directory and run the following commands: 
   2. `git clone --bare https://github.com/arthur-cheung/front-end-template.git`
   3. `cd front-end-template.git`
   4. `git push --mirror https://github.com/arthur-cheung/name-for-new-repo.git`
