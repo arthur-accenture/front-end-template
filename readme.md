@@ -1,5 +1,12 @@
 # Front End Template
 A template for a front end project.
+
+## Copy Repository
+1. Make sure you have git installed. Create a temp directory and run the following command: `git clone --bare https://github.com/arthur-cheung/front-end-template.git`
+2. `cd front-end-template.git`
+3. `git push --mirror https://github.com/arthur-cheung/name-for-new-repo.git`
+4. Pull the new repo down to your machine.
+
 ## Installation
 1. If gulp hasn't been installed globally, run: `npm install -g gulp` first.
 1. run `npm install`
