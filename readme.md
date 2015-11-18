@@ -6,7 +6,7 @@ A template for a front end project.
 2. Make sure you have git installed. Create a temp directory and run the following commands: 
   2. `git clone --bare https://github.com/arthur-cheung/front-end-template.git`
   3. `cd front-end-template.git`
-  4. `git push --mirror https://github.com/arthur-cheung/name-for-new-repo.git`
+  4. `git push --mirror https://github.com/your-github-username/name-for-new-repo.git`
 4. Delete `front-end-template.git`. 
 5. Pull the new repo down to your machine.
 
