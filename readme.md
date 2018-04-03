@@ -20,7 +20,7 @@ A template for a front end project.
 
 or
 
-1. `gulp test`
+1. `gulp serve`
 
 ## TODO
 * Need to refactor to not use gulp.start

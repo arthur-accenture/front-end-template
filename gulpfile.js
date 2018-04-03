@@ -149,9 +149,9 @@ gulp.task('watch', function() {
 
 // Test - dependency on build and watch
 // Alternative is to run "node server.js"
-gulp.task('test', ['build', 'watch'], function(){
+gulp.task('serve', ['build', 'watch'], function(){
     connect.server({
-        livereload: true, // This livereload is for when "gulp test" is run.
+        livereload: true, // This livereload is for when "gulp serve" is run.
         root: 'dist',
         port: 3000
     });
