@@ -17,13 +17,13 @@ var gulp = require('gulp'),
     livereload = require('gulp-livereload'),
     del = require('del'),
     htmlreplace = require('gulp-html-replace'),
-    connect = require('gulp-connect');
-
+    connect = require('gulp-connect'),
+    path = require('path');
 
 // Our task config
 var runList = [
     'styles',
-//    'images',
+    'images',
     'scripts',
     'html'
 ];
@@ -64,7 +64,7 @@ var taskFunctions = {
     images: function(){
         return new Promise(function(resolve, reject) {
             gulp.src('src/images/**/*')
-                .pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
+                // .pipe(cache(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true })))
                 .pipe(gulp.dest('dist/images'))
                 .pipe(notify({ message: 'Images task complete' }))
                 .on('data', createStream)
@@ -134,7 +134,13 @@ gulp.task('watch', function() {
     gulp.watch('src/scripts/**/*.js', ['scripts']);
 
     // Watch image files
-    gulp.watch('src/images/**/*', ['images']);
+    gulp.watch('src/images/**/*', ['images']).on('unlink', function (filepath) {
+        console.log('In watcher');
+        var filePathFromSrc = path.relative(path.resolve('images'), filepath);
+        // Concatenating the 'build' absolute path used by gulp.dest in the scripts task
+        var destFilePath = path.resolve('src', filePathFromSrc);
+        del.sync(destFilePath);
+      });
 
     // Watch html files
     gulp.watch('src/*.html', ['html']);
@@ -143,7 +149,7 @@ gulp.task('watch', function() {
     livereload.listen();  // This livereload is for when "node server.js" is run.
 
     // Watch any files in dist/, reload on change
-    gulp.watch(['dist/**']).on('change', livereload.changed);
+    gulp.watch(['dist/**']).on('change', livereload.changed)
 
 });
 
